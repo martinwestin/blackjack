@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 from flask_socketio import SocketIO, emit
 from game import Game, DBModels, Deck
-from time import sleep
 
 
 app = Flask(__name__)
