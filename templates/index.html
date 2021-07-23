@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p><strong>{{msg}}</strong></p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="main-container">
+        <div class="title-container">
+            <h1>Welcome to BlackJack</h1>
+        </div>
+        <div class="main-content">
+            <div class="create-game-container">
+                <div class="description">
+                    <div class="subtilte-contianer">
+                        <h2>Create a new game</h2>
+                    </div>
+                </div>
+                <div class="game-content">
+                    <div class="username-container">
+                        <input type="text" id="username-text" placeholder="Enter a username...">
+                    </div>
+                    <div class="button-container">
+                        <button id="create-button">Create</button>
+                    </div>
+                </div>
+            </div>
+            <div class="join-game-container">
+                <div class="description">
+                    <div class="subtilte-contianer">
+                        <h2>Join game</h2>
+                    </div>
+                    <form action="/" method="POST">
+                        <div class="game-content">
+                            <div class="join-container">
+                                <input type="text" name="join-username-text" placeholder="Enter a username..." required>
+                                <input type="text" name="join-id-text" placeholder="Enter game id..." required>
+                            </div>
+                            <div class="button-container">
+                                <input type="submit" id="join-button" value="Join">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

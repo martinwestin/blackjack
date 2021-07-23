@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Game{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/game.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div id="popup-window"></div>
+
+    <div class="main-container">
+        <div class="left-container">
+            <div id="connected-users"></div>
+            {% if is_creator and not has_started %}
+                <div class="start-game-container">
+                    <div class="button-container">
+                        <button id="start-button">Start game</button>
+                    </div>
+                </div>
+            {% endif %}
+            {% if is_creator and has_ended %}
+                <div class="replay-game-container">
+                    <div class="button-container">
+                        <button id="replay-button" onclick="replay()">Replay</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div id="main-game-board">
+            <div class="users-cards-container">
+                {% for user in connected %}
+                    <div class="user-card-section" id="{{user}}-section">
+                        <div class="username-container">
+                            <p><strong>{{user}}</strong></p>
+                        </div>
+                        <div class="cards-container" id="{{user}}-cards">
+                            {% for card in all_cards[user] %}
+                                <div class="card-container">
+                                    {% if user == logged_user %}
+                                        <img src="{{ url_for('static', filename='images/cards/' + card + '.jpg') }}" alt="card" height="50">
+                                    {% endif %}
+                                    {% if user != logged_user %}
+                                        <img src="{{ url_for('static', filename='images/card.png') }}" alt="deck" height="50">
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="deck-container">
+                <div class="deck-container-inner">
+                    <img src="{{ url_for('static', filename='images/card.png') }}" alt="deck" height="100">
+                </div>
+            </div>
+            <div class="new-card-container">
+                <div id="new-card-container-inner">
+
+                </div>
+            </div>
+            <div class="user-cards">
+                <div class="subtilte-contianer">
+                    <h2>Your cards</h2>
+                </div>
+                {% for card in cards %}
+                    <img src="{{ url_for('static', filename='images/cards/' + card + '.jpg') }}" alt="{{ card }}" height="70">
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+{% endblock %}

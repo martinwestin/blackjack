@@ -1,0 +1,52 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.main-container {
+    border: 3px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    width: 50vw;
+    margin-left: 2vw;
+}
+
+.create-game-container {
+    border: 3px solid black;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.join-game-container {
+    border: 3px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 1vw;
+}
+
+.button-container {
+    margin-left: 1vw;
+}
+
+button {
+    border-radius: 5px;
+    height: 2vw;
+    width: 5vw;
+    background-color: rgb(28, 53, 244);
+    cursor: pointer;
+}
+
+#join-button {
+    border-radius: 5px;
+    height: 2vw;
+    width: 5vw;
+    background-color: rgb(28, 53, 244);
+    cursor: pointer;
+}
+
+.game-content {
+    display: flex;
+}
+
+input {
+    border-radius: 5px;
+}
