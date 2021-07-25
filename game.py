@@ -130,9 +130,8 @@ class Game(DBModels):
             scores = list(map(lambda x: (x, self.hand_sum(x)), self.usernames()))
             try:
                 winner_list = sorted(list(filter(lambda x: x[1] < 22, scores)), key=lambda x: x[1])
-                if len(winner_list != 1):
-                    return list(map(lambda x: x[0], winner_list))
                 return winner_list[-1][0]
+
             except:
                 return "Tie"
 

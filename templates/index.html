@@ -3,6 +3,15 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <style>
+        #create-game-button {
+            border-radius: 5px;
+            height: 2vw;
+            width: 5vw;
+            background-color: rgb(28, 53, 244);
+            cursor: pointer;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -24,14 +33,16 @@
                         <h2>Create a new game</h2>
                     </div>
                 </div>
-                <div class="game-content">
-                    <div class="username-container">
-                        <input type="text" id="username-text" placeholder="Enter a username...">
+                <form action="/" method="POST">
+                    <div class="game-content">
+                        <div class="username-container">
+                            <input type="text" name="create-username-text" placeholder="Enter a username..." required>
+                        </div>
+                        <div class="button-container">
+                            <input type="submit" id="create-game-button" value="Create">
+                        </div>
                     </div>
-                    <div class="button-container">
-                        <button id="create-button">Create</button>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="join-game-container">
                 <div class="description">

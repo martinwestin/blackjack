@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, session
 from flask_socketio import SocketIO, emit
 from game import Game, DBModels, Deck
+from chat import Message, Chatroom
+from datetime import date
 
 
 app = Flask(__name__)
@@ -14,14 +16,20 @@ deck = Deck()
 @app.route("/", methods=["POST", "GET"])
 def index():
     if request.method == "POST":
-        username = request.form["join-username-text"]
-        game_id = request.form["join-id-text"]
-        if models_instance.game_exists(game_id):
-            session["user"] = username
-            return redirect(url_for("game", game_id=game_id))
+        try:
+            username = request.form["join-username-text"]
+            game_id = request.form["join-id-text"]
+            if models_instance.game_exists(game_id):
+                session["user"] = username
+                return redirect(url_for("game", game_id=game_id))
 
-        flash("Game not found.")
-        return render_template("index.html")
+            flash("Game not found.")
+            return render_template("index.html")
+        except:
+            username = request.form["create-username-text"]
+            models_instance.create_game(username)
+            session["user"] = username
+            return redirect(url_for("game", game_id=models_instance.latest_game()))
 
     return render_template("index.html")
 
@@ -32,6 +40,9 @@ def game(game_id):
             game = Game(game_id)
             creator = game.game_creator()
             all_user_cards = {}
+            chatroom = Chatroom(game_id)
+            chats = chatroom.fetch_messages()
+
             try:
                 cards = game.get_user_cards(session["user"])
             except:
@@ -50,21 +61,13 @@ def game(game_id):
                 has_ended = False
 
             return render_template("game.html", logged_user=session["user"], is_creator=creator==session["user"], has_started=game.has_been_started(),
-            cards=cards, connected=connected_users, all_cards=all_user_cards, has_ended=has_ended)
+            cards=cards, connected=connected_users, all_cards=all_user_cards, has_ended=has_ended, chats=chats)
 
         
         return "Game could not be found"
 
     flash("You have to enter a username in order to join a game.")
     return redirect(url_for("index"))
-
-
-@socketio.on("create_new_game")
-def create_game(msg):
-    user = msg["user"]
-    if user != "" and not user.isspace():
-        models_instance.create_game(user)
-        emit("created_game_response", {"id": models_instance.latest_game()}, room=request.sid)
 
 
 @socketio.on("connected_to_game")
@@ -188,6 +191,22 @@ def decline_new_card(msg):
                 emit("add_replay_button", room=game.fetch_user_sid(game.game_creator()))
         except:
             emit("no_card_picked", room=game.fetch_user_sid(game.current_turn()))
+
+
+@socketio.on("new_chat")
+def new_chat(msg):
+    if "user" in session:
+        game_id = msg["id"]
+        content = msg["content"]
+        game = Game(game_id)
+        user = game.fetch_user_by_sid(request.sid)
+
+        if content != "" and not content.isspace():
+            message = Message(content, user, game_id)
+            message.add()
+            data = {"sender": user, "content": content, "sent": str(date.today())}
+            for sid in game.connected_sids():
+                emit("new_chat_response", data, room=sid)
 
 
 if __name__ == "__main__":

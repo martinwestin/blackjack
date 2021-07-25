@@ -27,14 +27,6 @@
     margin-left: 1vw;
 }
 
-button {
-    border-radius: 5px;
-    height: 2vw;
-    width: 5vw;
-    background-color: rgb(28, 53, 244);
-    cursor: pointer;
-}
-
 #join-button {
     border-radius: 5px;
     height: 2vw;

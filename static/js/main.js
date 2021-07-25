@@ -15,7 +15,7 @@ class PopupWindow {
 
     config(content, color) {
         this.content = content;
-        this.color = color
+        this.color = color;
     }
 
     show() {
@@ -38,6 +38,31 @@ const url = window.location.href;
 const game_id = url.split("/").pop().split("?")[0];
 $(document).ready(function() {
     socket = io.connect("/");
+
+    const chat = $(".chat-container-inner")
+    chat.scrollTop(chat.prop("scrollHeight"));
+
+    $("#message-input").bind('keyup', function(event) {
+        if (event.keyCode === 13) {
+            socket.emit("new_chat", {
+                id: game_id,
+                content: $("#message-input").val()
+            });
+
+            $("#message-input").val("");
+        }
+    });
+
+    socket.on("new_chat_response", function(msg) {
+        const user = msg["sender"];
+        const sent = msg["sent"];
+        const content = msg["content"];
+
+        let newInnerHTML = chat.html();
+        newInnerHTML += "<div class='chat'><div class='chat-top-container'><p>{0} | {1}</div><div class='chat-content-container'>{2}</div></div>".format(user, sent, content);
+        chat.html(newInnerHTML);
+        chat.scrollTop(chat.prop("scrollHeight"));
+    });
 
     socket.on("connect", function() {
         socket.emit("connected_to_game", {
@@ -109,7 +134,7 @@ $(document).ready(function() {
         const users_div = $("#connected-users");
         let newInnerHTML = users_div.html();
         location.href = "/";
-        
+
     });
 
     socket.on("started_game", function() {
